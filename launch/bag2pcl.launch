@@ -2,6 +2,9 @@
 		
 	<!-- Publish Point Cloud From Bag -->
 	<node pkg="my_pcl_tutorial" type="my_pcl_tutorial_node" name="my_node">
+    
+    <!-- ADD TEST PARAMETER -->
+
 		<!-- Parameters -->
     <param name="applyBoxFilter" value="true" type="bool"/>
     <param name="boxFilterDist" value="5.0" type="double"/>

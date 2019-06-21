@@ -28,16 +28,20 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 	pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
 	pcl::PCLPointCloud2 cloudNew;
 
+	//TEST CODE
+	std::cout<<"params.applyBoxFilter: "<<params.applyBoxFilter<<std::endl;
+	std::cout<<"params.boxFilterDist: "<<params.boxFilterDist<<std::endl;
 	std::cout<<"params.applyVoxelGridFilter: "<<params.applyVoxelGridFilter<<std::endl;
 	std::cout<<"params.leafSize: "<<params.leafSize<<std::endl;
 	std::cout<<"params.findSurfaceNormals: "<<params.findSurfaceNormals<<std::endl;
+	std::cout<<"params.neighborRadius: "<<params.neighborRadius<<std::endl;
 
 	//Convert to PCL
 	pcl_conversions::toPCL(*input, *cloud);
 
 	//Apply Box Filter
 	if(params.applyBoxFilter) {
-		
+
 
 		ROS_DEBUG("Box filter applied...");
 	}
@@ -67,6 +71,8 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
   		pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
   		find_normals.setRadiusSearch(params.neighborRadius);
   		find_normals.compute(*cloud_normals);
+
+  		//Should I publish multiple clouds: filtered cloud and surface normal cloud???
 
 		ROS_DEBUG("Surface normals found...");
 	}
