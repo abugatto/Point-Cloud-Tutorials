@@ -35,8 +35,15 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 	//Convert to PCL
 	pcl_conversions::toPCL(*input, *cloud);
 
+	//Apply Box Filter
+	if(params.applyBoxFilter) {
+		
+
+		ROS_DEBUG("Box filter applied...");
+	}
+
+	//Implement VoxelGrid Filter
 	if(params.applyVoxelGridFilter) {
-		//Implement VoxelGrid Filter
 		//std::cout << cloud->header << std::endl; TEST CODE
 		pcl::VoxelGrid<pcl::PCLPointCloud2> sor; //create voxelgrid object
 		sor.setInputCloud(cloudPtr);
@@ -44,12 +51,32 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 		sor.filter(cloudNew);
 
 		ROS_DEBUG("VoxelGrid filter applied...");
+	} 
 
-		//Find Surface Normals
-		if(params.findSurfaceNormals) {
-			
-		}
-	} else {
+	//Find Surface Normals
+	if(params.findSurfaceNormals) {
+		// Create the normal estimation class
+  		pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> find_normals;
+  		find_normals.setInputCloud(cloud);
+
+  		//create KD tree of the point cloud
+  		pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ> ());
+  		find_normals.setSearchMethod(tree);
+
+  		//Find normals using nearest neighbor parameter
+  		pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
+  		find_normals.setRadiusSearch(params.neighborRadius);
+  		find_normals.compute(*cloud_normals);
+
+		ROS_DEBUG("Surface normals found...");
+	}
+	
+	if( !(
+		  params.applyBoxFilter && 
+		  params.applyVoxelGridFilter && 
+		  params.findSurfaceNormals
+		 ) ) {
+		cloudNew = *cloud;
 		ROS_DEBUG_STREAM(input->header);
 	}
 

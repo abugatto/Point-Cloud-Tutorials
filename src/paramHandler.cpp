@@ -15,6 +15,18 @@ void Parameters::Parameters(ros::NodeHandle& nd) {
 	// nh_.getParam("voxelGridLeafSize",params.leafSize);
 	// nh_.getParam("findSurfaceNormals",params.findSurfaceNormals);
 
+	if(ros::param::get("applyBoxFilter", params.applyBoxFilter)) {
+		ROS_DEBUG("applyBoxFilter set to:\t %d", params.applyBoxFilter);
+	} else {
+		ROS_DEBUG("ERROR: applyBoxFilter set to default...");
+	}
+
+	if(ros::param::get("boxFilterDist", params.boxFilterDist)) {
+		ROS_DEBUG("boxFilterDist set to:\t %f", params.boxFilterDist);
+	} else {
+		ROS_DEBUG("ERROR: boxFilterDist set to default...");
+	}
+
 	if(ros::param::get("applyVoxelGridFilter", params.applyVoxelGridFilter)) {
 		ROS_DEBUG("applyVoxelGridFilter set to:\t %d", params.applyVoxelGridFilter);
 	} else {
@@ -31,5 +43,11 @@ void Parameters::Parameters(ros::NodeHandle& nd) {
 		ROS_DEBUG("findSurfaceNormals set to:\t %d", params.findSurfaceNormals);
 	} else {
 		ROS_DEBUG("ERROR: findSurfaceNormals set to default...");
+	}
+
+	if(ros::param::get("neighborRadius", params.neighborRadius)) {
+		ROS_DEBUG("neighborRadius set to:\t %f", params.neighborRadius);
+	} else {
+		ROS_DEBUG("ERROR: neighborRadius set to default...");
 	}
 }

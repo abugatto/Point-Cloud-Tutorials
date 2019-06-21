@@ -3,14 +3,19 @@
 	<!-- Publish Point Cloud From Bag -->
 	<node pkg="my_pcl_tutorial" type="my_pcl_tutorial_node" name="my_node">
 		<!-- Parameters -->
-		<param name="applyVoxelGridFilter" value="false" type="bool"/>
-    	<param name="voxelGridLeafSize" value="1" type="double"/>
-    	<param name="findSurfaceNormals" value="true" type="bool"/>
+    <param name="applyBoxFilter" value="true" type="bool"/>
+    <param name="boxFilterDist" value="5.0" type="double"/>
 
-    	<!-- Remapping -->
-    	<remap from="input" to="/velodyne_points"/>
-    	<remap from="output" to="/example"/>
-  	</node>
+		<param name="applyVoxelGridFilter" value="false" type="bool"/>
+    <param name="voxelGridLeafSize" value="1.0" type="double"/>
+
+    <param name="findSurfaceNormals" value="true" type="bool"/>
+    <param name="neighborRadius" value=".03" type="double"/>
+
+    <!-- Remapping -->
+    <remap from="input" to="/velodyne_points"/>
+    <remap from="output" to="/example"/>
+  </node>
 
   	<!-- Play Bag -->
 	<arg name="path" default="l~/Desktop/Parallels Shared Folders/Home/Desktop/Autonomous Robotics Lab/Point Cloud Library/mine_bags/"/>
