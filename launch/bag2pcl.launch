@@ -1,0 +1,22 @@
+<launch>
+		
+	<!-- Publish Point Cloud From Bag -->
+	<node pkg="my_pcl_tutorial" type="my_pcl_tutorial_node" name="my_node">
+		<!-- Parameters -->
+		<param name="applyVoxelGridFilter" value="false" type="bool"/>
+    	<param name="voxelGridLeafSize" value="1" type="double"/>
+    	<param name="findSurfaceNormals" value="true" type="bool"/>
+
+    	<!-- Remapping -->
+    	<remap from="input" to="/velodyne_points"/>
+    	<remap from="output" to="/example"/>
+  	</node>
+
+  	<!-- Play Bag -->
+	<arg name="path" default="l~/Desktop/Parallels Shared Folders/Home/Desktop/Autonomous Robotics Lab/Point Cloud Library/mine_bags/"/>
+	<arg name="file" default="mine_data_2018-05-14-14-42-01_54"/>
+	<node pkg="rosbag" type="play" name="player" output="screen" args="-l $(arg path)$(arg file).bag"/>
+
+  	<!-- Visualize the point cloud in rviz -->
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find my_pcl_tutorial)/rviz_config/pcl_tutorial.rviz" required="true"/>
+</launch>
