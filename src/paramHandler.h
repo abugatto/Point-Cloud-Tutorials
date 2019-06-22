@@ -9,9 +9,17 @@
 class Parameters {
 	public:
 		Parameters(ros::NodeHandle& node);
+		bool getDebug();
+		bool getApplyBoxFilter();
+		double getBoxFilterDist(); 
+		bool getApplyVoxelGridFilter();
+		double getLeafSize();
+		bool getFindSurfaceNormals();
+		bool getNeighborRadius(); 
 
 	private:
 		ros::NodeHandle node;
+		bool debug = true;
 		bool applyBoxFilter = true;
 		double boxFilterDist = 5.0;
 		bool applyVoxelGridFilter = true;

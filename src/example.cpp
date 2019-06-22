@@ -11,6 +11,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/features/normal_3d.h>
 
 //Project libraries
 #include "paramHandler.h"
@@ -19,7 +20,7 @@
 ros::Publisher pub;
 
 //Creates parameter object
-Parameters params;
+Parameters* params;
 
 //Define Publisher function
 void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
@@ -29,36 +30,38 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 	pcl::PCLPointCloud2 cloudNew;
 
 	//TEST CODE
-	std::cout<<"params.applyBoxFilter: "<<params.applyBoxFilter<<std::endl;
-	std::cout<<"params.boxFilterDist: "<<params.boxFilterDist<<std::endl;
-	std::cout<<"params.applyVoxelGridFilter: "<<params.applyVoxelGridFilter<<std::endl;
-	std::cout<<"params.leafSize: "<<params.leafSize<<std::endl;
-	std::cout<<"params.findSurfaceNormals: "<<params.findSurfaceNormals<<std::endl;
-	std::cout<<"params.neighborRadius: "<<params.neighborRadius<<std::endl;
+	if(params->getDebug) {
+		std::cout << "\n\n\nparams->applyBoxFilter: " << params->getApplyBoxFilter() << std::endl;
+		std::cout << "params->boxFilterDist: " << params->getBoxFilterDist() << std::endl;
+		std::cout << "params->applyVoxelGridFilter: " << params->getApplyVoxelGridFilter() << std::endl;
+		std::cout << "params->leafSize: " << params->getLeafSize() << std::endl;
+		std::cout << "params->findSurfaceNormals: " << params->getFindSurfaceNormals() << std::endl;
+		std::cout << "params->neighborRadius: " << params->getNeighborRadius() << std::endl;
+	}
 
 	//Convert to PCL
 	pcl_conversions::toPCL(*input, *cloud);
 
 	//Apply Box Filter
-	if(params.applyBoxFilter) {
+	if(params->getApplyBoxFilter()) {
 
 
 		ROS_DEBUG("Box filter applied...");
 	}
 
 	//Implement VoxelGrid Filter
-	if(params.applyVoxelGridFilter) {
+	if(params->getApplyVoxelGridFilter()) {
 		//std::cout << cloud->header << std::endl; TEST CODE
 		pcl::VoxelGrid<pcl::PCLPointCloud2> sor; //create voxelgrid object
 		sor.setInputCloud(cloudPtr);
-		sor.setLeafSize(params.leafSize, params.leafSize, params.leafSize);
+		sor.setLeafSize(params->getLeafSize(), params->getLeafSize(), params->getLeafSize());
 		sor.filter(cloudNew);
 
 		ROS_DEBUG("VoxelGrid filter applied...");
 	} 
 
 	//Find Surface Normals
-	if(params.findSurfaceNormals) {
+	if(params->getFindSurfaceNormals()) {
 		// Create the normal estimation class
   		pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> find_normals;
   		find_normals.setInputCloud(cloud);
@@ -69,7 +72,7 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 
   		//Find normals using nearest neighbor parameter
   		pcl::PointCloud<pcl::Normal>::Ptr cloud_normals (new pcl::PointCloud<pcl::Normal>);
-  		find_normals.setRadiusSearch(params.neighborRadius);
+  		find_normals.setRadiusSearch(params->getNeighborRadius());
   		find_normals.compute(*cloud_normals);
 
   		//Should I publish multiple clouds: filtered cloud and surface normal cloud???
@@ -77,11 +80,7 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 		ROS_DEBUG("Surface normals found...");
 	}
 	
-	if( !(
-		  params.applyBoxFilter && 
-		  params.applyVoxelGridFilter && 
-		  params.findSurfaceNormals
-		 ) ) {
+	if(params->getDebug) {
 		cloudNew = *cloud;
 		ROS_DEBUG_STREAM(input->header);
 	}
@@ -97,13 +96,15 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 //main function creates subscriber for the published point cloud
 int main(int argc, char** argv) {
 	//Initialize ROS
-	ros::init(argc, argv, "my_pcl_tutorial");
+	ros::init(argc, argv, "pcl_practice");
 	ros::NodeHandle node;
 
-	std::cout<<"\n\n\nNODE launched\n";
-
 	//Parameters params;
-	Parameters(node);
+	*params = Parameters(node);
+
+	if(params->getDebug) {
+		std::cout<<"\n\n\nNODE launched\n"; //TEST CODE
+	}
 
 	//Create subscriber for the input pointcloud
 	ros::Subscriber sub = node.subscribe("/velodyne_points", 1, cloud_cb);

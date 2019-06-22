@@ -1,11 +1,9 @@
 <launch>
-		
 	<!-- Publish Point Cloud From Bag -->
-	<node pkg="my_pcl_tutorial" type="my_pcl_tutorial_node" name="my_node">
-    
-    <!-- ADD TEST PARAMETER -->
+	<node pkg="pcl_practice" type="pcl_practice_node" name="my_node">
+    <!-- Parameters -->
+    <param name="debug" value="true" type="bool"/>
 
-		<!-- Parameters -->
     <param name="applyBoxFilter" value="true" type="bool"/>
     <param name="boxFilterDist" value="5.0" type="double"/>
 
@@ -26,5 +24,5 @@
 	<node pkg="rosbag" type="play" name="player" output="screen" args="-l $(arg path)$(arg file).bag"/>
 
   	<!-- Visualize the point cloud in rviz -->
-  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find my_pcl_tutorial)/rviz_config/pcl_tutorial.rviz" required="true"/>
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find pcl_practice)/rviz_config/pcl_tutorial.rviz" required="true"/>
 </launch>
