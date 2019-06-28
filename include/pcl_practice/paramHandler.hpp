@@ -1,5 +1,5 @@
-#ifndef PARAMHANDLER_H
-#define PARAMHANDLER_H
+#ifndef PARAMHANDLER_HPP
+#define PARAMHANDLER_HPP
 
 //Declare ROS c++ library
 #include <ros/ros.h>
@@ -9,23 +9,23 @@
 class Parameters {
 	public:
 		Parameters(ros::NodeHandle& node);
-		bool getDebug();
 		bool getApplyBoxFilter();
-		double getBoxFilterDist(); 
+		double getBoxFilterBound(); 
 		bool getApplyVoxelGridFilter();
 		double getLeafSize();
 		bool getFindSurfaceNormals();
-		bool getNeighborRadius(); 
+		double getNeighborRadius(); 
+		bool getFindCenterAxis();
 
 	private:
-		ros::NodeHandle node;
 		bool debug = true;
 		bool applyBoxFilter = true;
-		double boxFilterDist = 5.0;
+		double boxFilterBound = 5.0;
 		bool applyVoxelGridFilter = true;
 		double leafSize = .1;
 		bool findSurfaceNormals = true;
-		bool neighborRadius = .03;
+		double neighborRadius = .03;
+		bool findCenterAxis = true;
 };
 
 //MAKE CLASS FOR POINT CLOUD HANDLING
