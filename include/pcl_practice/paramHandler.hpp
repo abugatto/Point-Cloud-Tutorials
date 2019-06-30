@@ -13,6 +13,7 @@ class Parameters {
 		double getBoxFilterBound(); 
 		bool getApplyVoxelGridFilter();
 		double getLeafSize();
+		// bool getPCLViz();
 		bool getFindSurfaceNormals();
 		double getNeighborRadius(); 
 		bool getFindCenterAxis();
@@ -23,6 +24,7 @@ class Parameters {
 		double boxFilterBound = 5.0;
 		bool applyVoxelGridFilter = true;
 		double leafSize = .1;
+		// bool pclviz = false;
 		bool findSurfaceNormals = true;
 		double neighborRadius = .03;
 		bool findCenterAxis = true;

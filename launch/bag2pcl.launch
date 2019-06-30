@@ -1,6 +1,7 @@
 <launch>
   <!-- Arguments -->
-  <arg name="rviz" default="false"/>
+  <arg name="rviz" default="true"/>
+  <arg name="normalviz" default="true"/>
 
   <!-- Parameters -->
   <param name="applyBoxFilter" value="false" type="bool"/>
@@ -9,9 +10,9 @@
   <param name="applyVoxelGridFilter" value="true" type="bool"/>
   <param name="voxelGridLeafSize" value="0.5" type="double"/>
 
+  <!-- <param name="pclviz" value="$(arg normalviz)" type="bool"/> -->
   <param name="findSurfaceNormals" value="false" type="bool"/>
-  <param name="neighborRadius" value=".03" type="double"/>
-  <param name="frame" value="/velodyne" type="string"/>
+  <param name="neighborRadius" value="0.5" type="double"/>
 
   <param name="findCenterAxis" value="false" type="bool"/>
 
@@ -29,6 +30,6 @@
 
   <!-- Visualize the point cloud in rviz -->
   <group if="$(arg rviz)">
-    <node launch-prefix="nice" name="rviz" pkg="rviz" type="rviz" args="-d $(find pcl_practice)/rviz_config/pcl_tutorial.rviz" required="true"/>
+    <node launch-prefix="nice" name="rviz" pkg="rviz" type="rviz" args="-d $(find pcl_practice)/rviz_config/pcl_tutorial.rviz" required="false"/>
   </group>
 </launch>

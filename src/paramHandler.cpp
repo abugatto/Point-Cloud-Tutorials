@@ -34,6 +34,12 @@ Parameters::Parameters(ros::NodeHandle& node) {
 		ROS_INFO("ERROR: leafSize set to default...");
 	}
 
+	// if(node.getParam("pclviz", pclviz)) {
+	// 	ROS_INFO("pclviz set to:\t %d", pclviz);
+	// } else {
+	// 	ROS_INFO("ERROR: pclviz set to default...");
+	// }
+
 	if(node.getParam("findSurfaceNormals", findSurfaceNormals)) {
 		ROS_INFO("findSurfaceNormals set to:\t %d", findSurfaceNormals);
 	} else {
@@ -68,6 +74,10 @@ bool Parameters::getApplyVoxelGridFilter() {
 double Parameters::getLeafSize() {
 	return leafSize;
 }  
+
+// bool getPCLViz() {
+// 	return pclviz;
+// }
 
 bool Parameters::getFindSurfaceNormals() {
 	return findSurfaceNormals;
