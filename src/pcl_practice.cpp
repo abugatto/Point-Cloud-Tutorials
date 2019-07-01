@@ -85,6 +85,8 @@ Parameters* params = nullptr;
 // 	return normalVecs;
 // }
 
+
+
 void pclvizNormals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, pcl::PointCloud<pcl::Normal>::Ptr normals) {
   	viewer.setBackgroundColor (0, 0, 0); //black
   	viewer.addPointCloud<pcl::PointXYZ>(cloud, "cloud" + std::to_string(pcl_var));
@@ -164,20 +166,24 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 
 	ROS_INFO("Surface normals found...");
 
-	//Center Axis -> USE EIGEN
-	//form similarity matrix from point curvatures in normal calculation
+	//CENTER Axis -> USE EIGEN
+	//form weight matrix from point curvatures in normal calculation
+	Eigen::MatrixXf weights; 
+	float weightingFactor = 0.2; //paper says in range [.0,.3]
+	curvature = 
 
+	weightedNormals = 
 
 	//Form normal similarity matrix
+	similarity = 
 
-
-	//Take eigenvalues of the similarity matrix
-
+	//Take eigenvectors of the similarity matrix
+	eigenVecs = 
 
 	//use minimum eigenvector as center axis and display on rviz
+	centerAxis = 
 
-
-	//ROS_INFO("Center Axis found...");
+	ROS_INFO("Center Axis found...");
 
 	//Convert Back to ROS
 	sensor_msgs::PointCloud2 output;
