@@ -31,59 +31,59 @@ ros::Publisher pub;
 //Creates parameter object
 Parameters* params = nullptr;
 
-visualization_msgs::MarkerArray* rvizNormals(const double& leafSize, 
-				 pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, 
-				 pcl::PointCloud<pcl::Normal>::Ptr normals
-				) {
-  	//apply extractIndices filter with voxelgrid according to frequency
+// visualization_msgs::MarkerArray* rvizNormals(const double& leafSize, 
+// 				 pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, 
+// 				 pcl::PointCloud<pcl::Normal>::Ptr normals
+// 				) {
+//   	//apply extractIndices filter with voxelgrid according to frequency
 
-  	//Implement VoxelGrid Filter
-	pcl::PCLPointCloud2Ptr cloudVoxelFiltered(new pcl::PCLPointCloud2);
-	double leafSize = params->getLeafSize();
+//   	//Implement VoxelGrid Filter
+// 	pcl::PCLPointCloud2Ptr cloudVoxelFiltered(new pcl::PCLPointCloud2);
+// 	double leafSize = params->getLeafSize();
 
-	pcl::VoxelGrid<pcl::PCLPointCloud2> voxelGridFilter; //create voxelgrid object
-	voxelGridFilter.setInputCloud(cloudBoxFilteredPtr);
-	voxelGridFilter.setLeafSize(leafSize, leafSize, leafSize);
-	voxelGridFilter.filter(*cloudVoxelFiltered);
+// 	pcl::VoxelGrid<pcl::PCLPointCloud2> voxelGridFilter; //create voxelgrid object
+// 	voxelGridFilter.setInputCloud(cloudBoxFilteredPtr);
+// 	voxelGridFilter.setLeafSize(leafSize, leafSize, leafSize);
+// 	voxelGridFilter.filter(*cloudVoxelFiltered);
 
-	pcl::PCLPointCloud2ConstPtr cloudVoxelFilteredPtr(cloudVoxelFiltered);
+// 	pcl::PCLPointCloud2ConstPtr cloudVoxelFilteredPtr(cloudVoxelFiltered);
 
-	ROS_INFO("VoxelGrid filter applied...");
+// 	ROS_INFO("VoxelGrid filter applied...");
 
-	int width = 0;
-  	visualization_msgs::MarkerArray* normalVecs(new visualization_msgs::MarkerArray);
-  	for(int i = 0; i < cloudVoxelFilteredPtr->height() * cloudVoxelFilteredPtr->width(); i++) {
+// 	int width = 0;
+//   	visualization_msgs::MarkerArray* normalVecs(new visualization_msgs::MarkerArray);
+//   	for(int i = 0; i < cloudVoxelFilteredPtr->height() * cloudVoxelFilteredPtr->width(); i++) {
 
 
-	  	//set normal parameters
-	   	normalVecs.marker[i].header.frame_id = params->getFrame();
-		normalVecs.marker[i].header.stamp = ros::Time::now();
-		normalVecs.marker[i].header.seq = 0;
-		normalVecs.marker[i].ns = "normals";
-		normalVecs.marker[i].id = 0;
-		normalVecs.marker[i].type = visualization_msgs::Marker::ARROW;
-		normalVecs.marker[i].action = visualization_msgs::Marker::ADD;
+// 	  	//set normal parameters
+// 	   	normalVecs.marker[i].header.frame_id = params->getFrame();
+// 		normalVecs.marker[i].header.stamp = ros::Time::now();
+// 		normalVecs.marker[i].header.seq = 0;
+// 		normalVecs.marker[i].ns = "normals";
+// 		normalVecs.marker[i].id = 0;
+// 		normalVecs.marker[i].type = visualization_msgs::Marker::ARROW;
+// 		normalVecs.marker[i].action = visualization_msgs::Marker::ADD;
 
-		//set start [0] and end [1] points of arrow
-		normalVecs.marker[i].points[0] = cloudVoxelFilteredPtr->data[][width];
-		normalVecs.marker[i].points[1] = normals->data[][width];
+// 		//set start [0] and end [1] points of arrow
+// 		normalVecs.marker[i].points[0] = cloudVoxelFilteredPtr->data[][width];
+// 		normalVecs.marker[i].points[1] = normals->data[][width];
 
-		//set normal scales
-		normalVecs.marker[i].scale.x = 0.01;
-		normalVecs.marker[i].scale.y = 0.025;
-		normalVecs.marker[i].scale.z = 0.01;
+// 		//set normal scales
+// 		normalVecs.marker[i].scale.x = 0.01;
+// 		normalVecs.marker[i].scale.y = 0.025;
+// 		normalVecs.marker[i].scale.z = 0.01;
 
-		//set normal colors
-		normalVecs.marker[i].color.a = 1.0;
-		normalVecs.marker[i].color.r = 0.0;
-		normalVecs.marker[i].color.g = 0.0;
-		normalVecs.marker[i].color.b = 1.0;
+// 		//set normal colors
+// 		normalVecs.marker[i].color.a = 1.0;
+// 		normalVecs.marker[i].color.r = 0.0;
+// 		normalVecs.marker[i].color.g = 0.0;
+// 		normalVecs.marker[i].color.b = 1.0;
 
-		width++;
-	}
+// 		width++;
+// 	}
 
-	return normalVecs;
-}
+// 	return normalVecs;
+// }
 
 void pclvizNormals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, pcl::PointCloud<pcl::Normal>::Ptr normals) {
   	viewer.setBackgroundColor (0, 0, 0); //black
