@@ -22,7 +22,7 @@
 #include "paramHandler.hpp"
 //#include "processCloud.hpp"
 
-int i = 0;
+int pcl_var = 0;
 pcl::visualization::PCLVisualizer viewer;
 
 //Create ROS publisher object
@@ -31,62 +31,70 @@ ros::Publisher pub;
 //Creates parameter object
 Parameters* params = nullptr;
 
-// void rvizNormals(const double& leafSize, 
-// 				 pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, 
-// 				 pcl::PointCloud<pcl::Normal>::Ptr normals,
-// 				 visualization_msgs::MarkerArray normalMarkers
-// 				) {
-//   	//apply extractIndices filter with voxelgrid according to frequency
+visualization_msgs::MarkerArray* rvizNormals(const double& leafSize, 
+				 pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, 
+				 pcl::PointCloud<pcl::Normal>::Ptr normals
+				) {
+  	//apply extractIndices filter with voxelgrid according to frequency
 
-//   	//Implement VoxelGrid Filter
-// 	pcl::PCLPointCloud2Ptr cloudVoxelFiltered(new pcl::PCLPointCloud2);
-// 	double leafSize = params->getLeafSize();
+  	//Implement VoxelGrid Filter
+	pcl::PCLPointCloud2Ptr cloudVoxelFiltered(new pcl::PCLPointCloud2);
+	double leafSize = params->getLeafSize();
 
-// 	pcl::VoxelGrid<pcl::PCLPointCloud2> voxelGridFilter; //create voxelgrid object
-// 	voxelGridFilter.setInputCloud(cloudBoxFilteredPtr);
-// 	voxelGridFilter.setLeafSize(leafSize, leafSize, leafSize);
-// 	voxelGridFilter.filter(*cloudVoxelFiltered);
+	pcl::VoxelGrid<pcl::PCLPointCloud2> voxelGridFilter; //create voxelgrid object
+	voxelGridFilter.setInputCloud(cloudBoxFilteredPtr);
+	voxelGridFilter.setLeafSize(leafSize, leafSize, leafSize);
+	voxelGridFilter.filter(*cloudVoxelFiltered);
 
-// 	pcl::PCLPointCloud2ConstPtr cloudVoxelFilteredPtr(cloudVoxelFiltered);
+	pcl::PCLPointCloud2ConstPtr cloudVoxelFilteredPtr(cloudVoxelFiltered);
 
-// 	ROS_INFO("VoxelGrid filter applied...");
+	ROS_INFO("VoxelGrid filter applied...");
 
-
-//   	visualization_msgs::MarkerArray normals;
-//   	for(int i = 0; i < cloudVoxelFilteredPtr->points.size(); i++) {
-// 	  	//set normal parameters
-// 	   	normals.marker[i].header.frame_id = params->getFrame();
-// 		normals.marker[i].header.stamp = ros::Time();
-// 		normals.marker[i].ns = "normals";
-// 		normals.marker[i].id = 0;
-// 		normals.marker[i].type = visualization_msgs::Marker::ARROW;
-// 		normals.marker[i].action = visualization_msgs::Marker::ADD;
+	int width = 0;
+  	visualization_msgs::MarkerArray* normalVecs(new visualization_msgs::MarkerArray);
+  	for(int i = 0; i < cloudVoxelFilteredPtr->height() * cloudVoxelFilteredPtr->width(); i++) {
 
 
+	  	//set normal parameters
+	   	normalVecs.marker[i].header.frame_id = params->getFrame();
+		normalVecs.marker[i].header.stamp = ros::Time::now();
+		normalVecs.marker[i].header.seq = 0;
+		normalVecs.marker[i].ns = "normals";
+		normalVecs.marker[i].id = 0;
+		normalVecs.marker[i].type = visualization_msgs::Marker::ARROW;
+		normalVecs.marker[i].action = visualization_msgs::Marker::ADD;
 
-// 		//set normal scales
-// 		normals.marker[i].scale.x = 0.01;
-// 		normals.marker[i].scale.y = 0.025;
-// 		normals.marker[i].scale.z = 0.01;
+		//set start [0] and end [1] points of arrow
+		normalVecs.marker[i].points[0] = cloudVoxelFilteredPtr->data[][width];
+		normalVecs.marker[i].points[1] = normals->data[][width];
 
-// 		//set normal colors
-// 		normals.marker[i].color.a = 1.0;
-// 		normals.marker[i].color.r = 0.0;
-// 		normals.marker[i].color.g = 0.0;
-// 		normals.marker[i].color.b = 1.0;
-// 	}
-// }
+		//set normal scales
+		normalVecs.marker[i].scale.x = 0.01;
+		normalVecs.marker[i].scale.y = 0.025;
+		normalVecs.marker[i].scale.z = 0.01;
 
-void pclviz(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, pcl::PointCloud<pcl::Normal>::Ptr normals) {
+		//set normal colors
+		normalVecs.marker[i].color.a = 1.0;
+		normalVecs.marker[i].color.r = 0.0;
+		normalVecs.marker[i].color.g = 0.0;
+		normalVecs.marker[i].color.b = 1.0;
+
+		width++;
+	}
+
+	return normalVecs;
+}
+
+void pclvizNormals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, pcl::PointCloud<pcl::Normal>::Ptr normals) {
   	viewer.setBackgroundColor (0, 0, 0); //black
-  	viewer.addPointCloud<pcl::PointXYZ>(cloud, "cloud" + std::to_string(i));
+  	viewer.addPointCloud<pcl::PointXYZ>(cloud, "cloud" + std::to_string(pcl_var));
   	//PCL_VISUALIZER_POINT_SIZE is int starting from 1
-  	viewer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud" + std::to_string(i));
-  	viewer.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(cloud, normals, 10, .1, "normals" + std::to_string(i));
+  	viewer.setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud" + std::to_string(pcl_var));
+  	viewer.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(cloud, normals, 10, .1, "normals" + std::to_string(pcl_var));
   	viewer.addCoordinateSystem (1.0);
   	viewer.initCameraParameters();
   	viewer.spinOnce();
-  	i++;
+  	pcl_var++;
 }
 
 //Define Publisher function
@@ -150,11 +158,9 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
 	//min number of normals
 
   	//visualize
-  	// pcl::visualization::PCLVisualizer::Ptr viewer;
-  	// pclviz(point_cloud, cloud_normals);
+  	// pclvizNormals(point_cloud, cloud_normals);
 
-  	//DRAW ARROWS (have variable arrow size)
-  	rvizNormals(point_cloud, cloud_normals)
+  		rvizNormals(point_cloud, cloud_normals)
 
 	ROS_INFO("Surface normals found...");
 
