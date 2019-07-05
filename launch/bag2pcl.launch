@@ -11,7 +11,7 @@
   <param name="voxelGridLeafSize" value="0.5" type="double"/>
 
   <!-- <param name="pclviz" value="$(arg normalviz)" type="bool"/> -->
-  <param name="findSurfaceNormals" value="false" type="bool"/>
+  <param name="findSurfaceNormals" value="true" type="bool"/>
   <param name="neighborRadius" value="0.5" type="double"/>
 
   <param name="findCenterAxis" value="false" type="bool"/>
