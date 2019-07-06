@@ -5,7 +5,7 @@
 
   <!-- Parameters -->
   <param name="applyBoxFilter" value="false" type="bool"/>
-  <param name="boxFilterBound" value="7.0" type="double"/>
+  <param name="boxFilterBound" value="5.0" type="double"/>
 
   <param name="applyVoxelGridFilter" value="true" type="bool"/>
   <param name="voxelGridLeafSize" value="0.5" type="double"/>

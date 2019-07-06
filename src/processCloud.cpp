@@ -81,7 +81,7 @@ pcl::PointCloud<pcl::Normal>::Ptr getNormals(const double& neighborRadius, pcl::
 }
 
 //Calculates center axis of the tunnel using the eigenvalues and eigenvectors of the normal cloud
-Eigen::Vector3f* getLocalFrame(const int& cloudSize, const pcl::PointCloud<pcl::Normal>::Ptr& cloud_normals) {
+Eigen::Matrix3f* getLocalFrame(const int& cloudSize, const pcl::PointCloud<pcl::Normal>::Ptr& cloud_normals) {
 	//CENTER Axis -> USE EIGEN
 	//initialize weight matrix with curvatures and weight factor
 	Eigen::MatrixXf weights = Eigen::MatrixXf::Zero(cloudSize, cloudSize); //(nxn)
@@ -205,9 +205,9 @@ visualization_msgs::MarkerArray* rvizNormals(
 
 	int width = 0;
 	visualization_msgs::MarkerArray* normalVecs(new visualization_msgs::MarkerArray);
-
-	displayArrow()
-
+	// for(int i = 0; i < cloud->points().size(); i++) {
+	// 	rvizArrow()
+	// }
 
 	return normalVecs;
 }
